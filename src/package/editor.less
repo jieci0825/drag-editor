@@ -1,0 +1,60 @@
+.editor-container {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	.editor-material {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 300px;
+		height: 100%;
+		background-color: sandybrown;
+		z-index: 2;
+	}
+	.editor-main {
+		position: absolute;
+		inset: 0;
+		padding: 0 300px;
+		background-color: salmon;
+		display: flex;
+		flex-direction: column;
+		z-index: 1;
+		.editor-menu {
+			width: 100%;
+			height: 100px;
+			background-color: rebeccapurple;
+		}
+		.editor-content {
+			width: 100%;
+			flex: 1;
+			background-color: skyblue;
+			padding: 20px;
+			overflow: hidden;
+			.editor-canvas-wrap {
+				width: 100%;
+				height: 100%;
+				overflow: scroll;
+				position: relative;
+				.editor-canvas {
+					min-width: 600px;
+					height: 1200px;
+					background-color: olivedrab;
+					position: absolute;
+					left: 50%;
+					top: 0;
+					transform: translateX(-50%);
+				}
+			}
+		}
+	}
+	.editor-controller {
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 300px;
+		height: 100%;
+		background-color: saddlebrown;
+		z-index: 2;
+	}
+}
