@@ -1,5 +1,9 @@
-<script setup></script>
+<script setup>
+import Editor from './package/editor'
+</script>
 
-<template></template>
+<template>
+	<Editor></Editor>
+</template>
 
 <style scoped lang="less"></style>
