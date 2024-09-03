@@ -9,14 +9,49 @@
 		top: 0;
 		width: 300px;
 		height: 100%;
-		background-color: sandybrown;
 		z-index: 2;
+		padding: 20px;
+		.editor-material-item {
+			width: 100%;
+			min-height: 100px;
+			margin-top: 20px;
+			border: 1px dashed #a4b0be;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: move;
+			user-select: none;
+			position: relative;
+			border-radius: 0;
+			z-index: 1000;
+			&:first-child {
+				margin-top: 0;
+			}
+			& > span {
+				position: absolute;
+				left: 0;
+				top: 0;
+				background-color: var(--el-color-primary-light-7);
+				width: fit-content;
+				color: var(--el-color-primary);
+				padding: 3px 8px;
+				font-size: 14px;
+				border-radius: inherit;
+				z-index: 1;
+			}
+			&::after {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background-color: #a4b0be;
+				opacity: 0.2;
+			}
+		}
 	}
 	.editor-main {
 		position: absolute;
 		inset: 0;
 		padding: 0 300px;
-		background-color: salmon;
 		display: flex;
 		flex-direction: column;
 		z-index: 1;
@@ -37,13 +72,13 @@
 				overflow: scroll;
 				position: relative;
 				.editor-canvas {
-					min-width: 600px;
-					height: 1200px;
-					background-color: olivedrab;
-					position: absolute;
-					left: 50%;
-					top: 0;
-					transform: translateX(-50%);
+					margin: 0 auto;
+					background-color: #fff;
+					position: relative;
+					.editor-block {
+						position: absolute;
+						// border: 1px dashed #a4b0be;
+					}
 				}
 			}
 		}

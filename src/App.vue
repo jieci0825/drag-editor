@@ -1,9 +1,12 @@
 <script setup>
-import Editor from './package/editor'
+import Editor from './package/editor.vue'
 import data from './data'
-import { ref } from 'vue'
+import { provide, ref } from 'vue'
+import { editorConfig } from './utils/editor-config'
 
 const state = ref(data)
+
+provide('editorConfig', editorConfig)
 </script>
 
 <template>

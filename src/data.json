@@ -1,12 +1,11 @@
 {
 	"container": {
-		"width": 600,
+		"width": 800,
 		"height": 1200
 	},
 	"blocks": [
 		{
 			"type": "text",
-			"text": "Hello World",
 			"x": 50,
 			"y": 50,
 			"width": 100,
@@ -15,7 +14,6 @@
 		},
 		{
 			"type": "button",
-			"text": "Click Me",
 			"x": 50,
 			"y": 100,
 			"width": 100,
@@ -25,9 +23,8 @@
 		{
 			"type": "input",
 			"text": "",
-            "placeholder":"enter content",
 			"x": 50,
-			"y": 200,
+			"y": 150,
 			"width": 220,
 			"height": 40,
 			"zIndex": 1
