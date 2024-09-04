@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, computed } from 'vue'
+import { ref, inject, computed, onMounted } from 'vue'
 import EditorBlock from './editor-block.vue'
 
 const modelValue = defineModel({ type: Object, default: () => ({}) })
@@ -26,20 +26,29 @@ const handleDragLeave = e => {
 	e.dataTransfer.dropEffect = 'none' // 设置拖拽效果
 }
 const handleDrop = e => {
+	// 添加一个渲染组件
 	const blocks = modelValue.value.blocks
-	const data = {
-		...modelValue.value,
-		blocks: [
-			...blocks,
-			{ type: curComponent.value.type, x: e.offsetX, y: e.offsetY, width: 100, height: 30, zIndex: 1 }
-		]
+	const block = {
+		type: curComponent.value.type,
+		x: e.offsetX,
+		y: e.offsetY,
+		width: curComponent.value.width,
+		height: curComponent.value.height,
+		zIndex: 1,
+		alignCenter: true
 	}
+	blocks.push(block)
+	const data = { ...modelValue.value, blocks }
 
 	modelValue.value = data
+}
 
-	resetTargetStyle()
-	curEvt.value = null
-	curComponent.value = null
+const handleDragEnd = e => {
+	reset()
+	containerRef.value.removeEventListener('dragenter', handleDragEnter)
+	containerRef.value.removeEventListener('dragover', handleDragOver)
+	containerRef.value.removeEventListener('dragleave', handleDragLeave)
+	containerRef.value.removeEventListener('drop', handleDrop)
 }
 
 const handleDragStart = (e, comp) => {
@@ -56,27 +65,44 @@ const handleDragStart = (e, comp) => {
 	containerRef.value.addEventListener('drop', handleDrop)
 }
 
+function reset() {
+	curEvt.value && resetTargetStyle()
+	curEvt.value = null
+	curComponent.value = null
+}
+
 function setTargetStyle() {
-	curEvt.value.target.style.opacity = 0.5
+	curEvt.value.target.classList.add('dragging')
 }
 
 function resetTargetStyle() {
-	curEvt.value.target.style.opacity = 1
+	curEvt.value.target.classList.remove('dragging')
 }
+
+const canvasSize = ref({
+	width: modelValue.value.container.width,
+	height: modelValue.value.container.height
+})
+
+onMounted(() => {})
 </script>
 
 <template>
 	<div class="editor-container">
 		<div class="editor-material">
 			<div
+				class="editor-material-item-wrap"
 				v-for="(component, idx) in editorConfigInject.componentList"
-				:key="idx"
-				:draggable="true"
-				@dragstart="handleDragStart($event, component)"
-				class="editor-material-item">
-				<span>{{ component.label }}</span>
-				<div>
-					<component :is="component.preview()" />
+				:key="idx">
+				<div
+					:draggable="true"
+					@dragstart="handleDragStart($event, component)"
+					@dragend="handleDragEnd"
+					class="editor-material-item">
+					<span>{{ component.label }}</span>
+					<div>
+						<component :is="component.preview()" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -91,6 +117,7 @@ function resetTargetStyle() {
 						<EditorBlock
 							v-for="block in modelValue.blocks"
 							:key="block"
+							:canvas-size="canvasSize"
 							:block="block" />
 					</div>
 				</div>
