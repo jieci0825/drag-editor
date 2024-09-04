@@ -11,6 +11,8 @@ const props = defineProps({
 	}
 })
 
+const emits = defineEmits(['blockMouseDown'])
+
 const blockStyle = computed(() => {
 	return {
 		left: props.block.x + 'px',
@@ -49,6 +51,9 @@ const handleEagePos = () => {
 		top = maxTop
 	}
 
+	props.block.x = left
+	props.block.y = top
+
 	blockRef.value.style.left = left + 'px'
 	blockRef.value.style.top = top + 'px'
 }
@@ -63,8 +68,10 @@ onMounted(() => {
 
 <template>
 	<div
+		@mousedown="emits('blockMouseDown', $event, blockRef)"
 		ref="blockRef"
 		:style="blockStyle"
+		:class="{ 'editor-block-focus': props.block.focus }"
 		class="editor-block">
 		<component :is="comp.render()" />
 	</div>
