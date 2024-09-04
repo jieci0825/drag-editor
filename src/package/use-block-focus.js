@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 
-export function useBlockFocus(modelValue) {
+export function useBlockFocus(modelValue, { callback }) {
 	// 选中的block
 	const focusData = computed(() => {
 		const focus = modelValue.value.blocks.filter(block => block.focus)
@@ -11,21 +11,23 @@ export function useBlockFocus(modelValue) {
 		}
 	})
 
-	// 获取选中的block
 	const handleBlockMouseDown = (e, blockRef, block) => {
 		e.preventDefault()
 		e.stopPropagation()
 
-		if (e.shiftKey) {
-			block.focus = !block.focus
-		} else {
-			clearBlockFocus()
-			if (!block.focus) {
-				block.focus = true
-			} else {
-				block.focus = false
+		if (!block.focus) {
+			if (!e.shiftKey) {
+				clearBlockFocus()
 			}
+			block.focus = true
 		}
+		callback && callback(e)
+	}
+
+	function clearBlockFocus() {
+		modelValue.value.blocks.forEach(block => {
+			block.focus = false
+		})
 	}
 
 	// 画布点击
@@ -33,12 +35,6 @@ export function useBlockFocus(modelValue) {
 		e.preventDefault()
 		e.stopPropagation()
 		clearBlockFocus()
-	}
-
-	function clearBlockFocus() {
-		modelValue.value.blocks.forEach(block => {
-			block.focus = false
-		})
 	}
 
 	return {

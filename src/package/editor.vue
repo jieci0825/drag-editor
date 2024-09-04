@@ -1,8 +1,9 @@
 <script setup>
-import { ref, inject, computed } from 'vue'
 import EditorBlock from './editor-block.vue'
-import { useDragger } from './useDragger'
-import { useBlockFocus } from './useBlockFocus'
+import { ref, inject, computed } from 'vue'
+import { useDragger } from './use-dragger'
+import { useBlockFocus } from './use-block-focus'
+import { useCanvasDrag } from './use-canvas-drag'
 
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
@@ -13,14 +14,21 @@ const containerStyle = computed(() => {
 })
 
 const containerRef = ref(null)
-
 const editorConfigInject = inject('editorConfig')
 
 // 物料区拖拽到画布
 const { handleDragStart, handleDragEnd } = useDragger(modelValue, containerRef)
 
 // 焦点
-const { handleBlockMouseDown, handleCanvasMouseDown, focusData } = useBlockFocus(modelValue)
+const { handleBlockMouseDown, focusData, handleCanvasMouseDown } = useBlockFocus(modelValue, {
+	callback: e => {
+		// 画布内拖拽
+		handleMouseDown(e)
+	}
+})
+
+// 画布内拖拽
+const { handleMouseDown } = useCanvasDrag(focusData)
 
 const canvasSize = ref({
 	width: modelValue.value.container.width,
