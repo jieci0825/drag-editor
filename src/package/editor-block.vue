@@ -56,6 +56,7 @@ const handleEagePos = () => {
 onMounted(() => {
 	if (props.block.alignCenter) {
 		handleEagePos()
+		props.block.alignCenter = false
 	}
 })
 </script>

@@ -17,7 +17,6 @@ provide('editorConfig', editorConfig)
 
 <style scoped lang="less">
 .container {
-	padding: 20px;
 	position: fixed;
 	inset: 0;
 	overflow: hidden;
