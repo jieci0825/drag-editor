@@ -3,11 +3,12 @@
 	height: 100%;
 	overflow: hidden;
 	position: relative;
+	--aside-width: 300px;
 	.editor-material {
 		position: absolute;
 		left: 0;
 		top: 0;
-		width: 300px;
+		width: var(--aside-width);
 		height: 100%;
 		z-index: 2;
 		padding: 10px;
@@ -64,7 +65,7 @@
 	.editor-main {
 		position: absolute;
 		inset: 0;
-		padding: 0 300px;
+		padding: 0 var(--aside-width);
 		display: flex;
 		flex-direction: column;
 		z-index: 1;
@@ -90,6 +91,20 @@
 					margin: 0 auto;
 					background-color: var(--el-bg-color);
 					position: relative;
+					.show-horizontal,
+					.show-vertical {
+						position: absolute;
+						left: 0;
+						top: 0;
+					}
+					.show-horizontal {
+						width: 100%;
+						border-top: 1.5px dotted var(--el-color-primary);
+					}
+					.show-vertical {
+						height: 100%;
+						border-left: 1.5px dotted var(--el-color-primary);
+					}
 					.editor-block {
 						position: absolute;
 						&::after {
@@ -112,7 +127,7 @@
 		position: absolute;
 		right: 0;
 		top: 0;
-		width: 300px;
+		width: var(--aside-width);
 		height: 100%;
 		background-color: var(--el-bg-color);
 		z-index: 2;

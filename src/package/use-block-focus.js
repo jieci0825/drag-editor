@@ -1,6 +1,14 @@
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 export function useBlockFocus(modelValue, { callback }) {
+	// 当前选中的block的index -1表示没有选中
+	const curSelectIndex = ref(-1)
+
+	// 当前选中的block，也就是最后最一个被选中的block
+	const lastSelectBlock = computed(() => {
+		return modelValue.value.blocks[curSelectIndex.value]
+	})
+
 	// 选中的block
 	const focusData = computed(() => {
 		const focus = modelValue.value.blocks.filter(block => block.focus)
@@ -11,7 +19,7 @@ export function useBlockFocus(modelValue, { callback }) {
 		}
 	})
 
-	const handleBlockMouseDown = (e, blockRef, block) => {
+	const handleBlockMouseDown = (e, blockRef, block, index) => {
 		e.preventDefault()
 		e.stopPropagation()
 
@@ -21,6 +29,7 @@ export function useBlockFocus(modelValue, { callback }) {
 			}
 			block.focus = true
 		}
+		curSelectIndex.value = index
 		callback && callback(e)
 	}
 
@@ -34,12 +43,14 @@ export function useBlockFocus(modelValue, { callback }) {
 	const handleCanvasMouseDown = e => {
 		e.preventDefault()
 		e.stopPropagation()
+		curSelectIndex.value = -1
 		clearBlockFocus()
 	}
 
 	return {
 		handleBlockMouseDown,
 		handleCanvasMouseDown,
-		focusData
+		focusData,
+		lastSelectBlock
 	}
 }

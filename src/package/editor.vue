@@ -4,6 +4,7 @@ import { ref, inject, computed } from 'vue'
 import { useDragger } from './use-dragger'
 import { useBlockFocus } from './use-block-focus'
 import { useCanvasDrag } from './use-canvas-drag'
+import { useMarkLine } from './use-mark-line'
 
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
@@ -15,12 +16,18 @@ const containerStyle = computed(() => {
 
 const containerRef = ref(null)
 const editorConfigInject = inject('editorConfig')
+const canvasSize = ref({
+	width: modelValue.value.container.width,
+	height: modelValue.value.container.height
+})
+
+const { markLine, setMarkLine, clearMarkLine } = useMarkLine()
 
 // 物料区拖拽到画布
 const { handleDragStart, handleDragEnd } = useDragger(modelValue, containerRef)
 
 // 焦点
-const { handleBlockMouseDown, focusData, handleCanvasMouseDown } = useBlockFocus(modelValue, {
+const { handleBlockMouseDown, focusData, handleCanvasMouseDown, lastSelectBlock } = useBlockFocus(modelValue, {
 	callback: e => {
 		// 画布内拖拽
 		handleMouseDown(e)
@@ -28,12 +35,7 @@ const { handleBlockMouseDown, focusData, handleCanvasMouseDown } = useBlockFocus
 })
 
 // 画布内拖拽
-const { handleMouseDown } = useCanvasDrag(focusData)
-
-const canvasSize = ref({
-	width: modelValue.value.container.width,
-	height: modelValue.value.container.height
-})
+const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMarkLine, canvasSize })
 </script>
 
 <template>
@@ -65,11 +67,20 @@ const canvasSize = ref({
 						ref="containerRef"
 						class="editor-canvas">
 						<EditorBlock
-							@block-mouse-down="($event, blockRef) => handleBlockMouseDown($event, blockRef, block)"
-							v-for="block in modelValue.blocks"
+							@block-mouse-down="($event, blockRef) => handleBlockMouseDown($event, blockRef, block, index)"
+							v-for="(block, index) in modelValue.blocks"
 							:key="block"
 							:canvas-size="canvasSize"
 							:block="block" />
+						<!-- 辅助线 -->
+						<div
+							v-if="markLine.y"
+							:style="{ top: `${markLine.y}px` }"
+							class="show-horizontal"></div>
+						<div
+							v-if="markLine.x"
+							:style="{ left: `${markLine.x}px` }"
+							class="show-vertical"></div>
 					</div>
 				</div>
 			</div>

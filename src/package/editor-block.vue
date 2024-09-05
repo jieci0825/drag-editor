@@ -11,14 +11,12 @@ const props = defineProps({
 	}
 })
 
-const emits = defineEmits(['blockMouseDown'])
+const emits = defineEmits(['blockMouseDown', 'blockMouseUp'])
 
 const blockStyle = computed(() => {
 	return {
 		left: props.block.x + 'px',
 		top: props.block.y + 'px',
-		width: props.block.width + 'px',
-		height: props.block.height + 'px',
 		zIndex: props.block.zIndex
 	}
 })
@@ -58,11 +56,21 @@ const handleEagePos = () => {
 	blockRef.value.style.top = top + 'px'
 }
 
+// 处理block属性
+const handleBlockProps = () => {
+	// 添加宽高属性
+	props.block.width = blockRef.value.offsetWidth
+	props.block.height = blockRef.value.offsetHeight
+}
+
 onMounted(() => {
+	// 从物料区拖进画布时需要居中
 	if (props.block.alignCenter) {
 		handleEagePos()
+		// 修改对齐属性
 		props.block.alignCenter = false
 	}
+	handleBlockProps()
 })
 </script>
 
