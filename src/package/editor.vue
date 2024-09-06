@@ -68,6 +68,7 @@ const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkL
 					@click="menu.handle"
 					v-for="(menu, index) in menus"
 					:key="index"
+					:title="menu.title"
 					:class="{ 'editor-menu-item': true, 'is-disabled': menu.disabled }">
 					<span :class="['iconfont', menu.icon]"></span>
 					<span>{{ menu.label }}</span>
