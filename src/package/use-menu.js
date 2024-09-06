@@ -17,6 +17,16 @@ export function useMenu(commandState) {
 				() => commandState.curIndex === commandState.queue.length - 1 || commandState.queue.length === 0
 			),
 			handle: commandState.commandMap.redo
+		},
+		{
+			label: '导入',
+			icon: 'icon-import',
+			handle: commandState.commandMap.importConfig
+		},
+		{
+			label: '导出',
+			icon: 'icon-export',
+			handle: commandState.commandMap.exportConfig
 		}
 	])
 

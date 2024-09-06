@@ -1,6 +1,8 @@
-import { onUnmounted, reactive } from 'vue'
+import { onUnmounted, reactive, h } from 'vue'
 import { emitter, events } from './events'
 import deepcopy from 'deepcopy'
+import { $dialog } from '../utils/dialog'
+import EditorExportConfig from './editor-export-config.vue'
 
 export function useCommands(modelValue) {
 	const commandState = reactive({
@@ -109,6 +111,28 @@ export function useCommands(modelValue) {
 					// ! 存疑
 					// 撤销操作，将画布中的数据还原到拖拽前的数据
 					modelValue.value = { ...modelValue.value, blocks: beforeBlocks }
+				}
+			}
+		}
+	})
+	register({
+		name: 'importConfig',
+		keyboard: '',
+		execute() {
+			return {
+				redo() {
+					console.log('导入')
+				}
+			}
+		}
+	})
+	register({
+		name: 'exportConfig',
+		keyboard: '',
+		execute() {
+			return {
+				redo() {
+					$dialog({ title: '导出JSON配置', content: h(EditorExportConfig) })
 				}
 			}
 		}
