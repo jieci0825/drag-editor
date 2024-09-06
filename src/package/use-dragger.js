@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { emitter, events } from './events'
 
 export function useDragger(modelValue, containerRef) {
 	const curEvt = ref(null)
@@ -29,6 +30,8 @@ export function useDragger(modelValue, containerRef) {
 		const data = { ...modelValue.value, blocks }
 
 		modelValue.value = data
+
+		emitter.emit(events.DROP)
 	}
 
 	const handleDragEnd = e => {
@@ -37,6 +40,7 @@ export function useDragger(modelValue, containerRef) {
 		containerRef.value.removeEventListener('dragover', handleDragOver)
 		containerRef.value.removeEventListener('dragleave', handleDragLeave)
 		containerRef.value.removeEventListener('drop', handleDrop)
+		emitter.emit(events.DRAG_END)
 	}
 
 	const handleDragStart = (e, comp) => {
@@ -51,6 +55,8 @@ export function useDragger(modelValue, containerRef) {
 		containerRef.value.addEventListener('dragleave', handleDragLeave)
 		// drop 松开，根据拖拽的组件生成一个组件
 		containerRef.value.addEventListener('drop', handleDrop)
+
+		emitter.emit(events.DRAG_START)
 	}
 
 	function reset() {

@@ -74,6 +74,41 @@
 			height: 80px;
 			background-color: var(--el-bg-color);
 			border-bottom: 1.5px dashed var(--el-border-color);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			&-item {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 60px;
+				height: 60px;
+				border-radius: 4px;
+				background-color: var(--el-bg-color-page);
+				cursor: pointer;
+				transition: all 0.3s;
+				font-size: 14px;
+				color: var(--el-text-color-regular);
+				user-select: none;
+				&.is-disabled {
+					color: var(--el-disabled-text-color);
+					background-color: var(--el-disabled-bg-color);
+					cursor: not-allowed;
+					&:hover {
+						color: var(--el-disabled-text-color);
+						background-color: var(--el-disabled-bg-color);
+					}
+				}
+				.iconfont {
+					font-size: 20px;
+				}
+				&:hover {
+					color: var(--el-color-primary);
+					background-color: var(--el-color-primary-light-8);
+				}
+			}
 		}
 		.editor-content {
 			width: 100%;

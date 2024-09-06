@@ -5,6 +5,8 @@ import { useDragger } from './use-dragger'
 import { useBlockFocus } from './use-block-focus'
 import { useCanvasDrag } from './use-canvas-drag'
 import { useMarkLine } from './use-mark-line'
+import { useMenu } from './use-menu'
+import { useCommands } from './use-commands'
 
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
@@ -20,6 +22,9 @@ const canvasSize = ref({
 	width: modelValue.value.container.width,
 	height: modelValue.value.container.height
 })
+
+const { commandState } = useCommands(modelValue)
+const { menus } = useMenu(commandState)
 
 const { markLine, setMarkLine, clearMarkLine } = useMarkLine()
 
@@ -58,7 +63,16 @@ const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkL
 			</div>
 		</div>
 		<div class="editor-main">
-			<div class="editor-menu"></div>
+			<div class="editor-menu">
+				<div
+					@click="menu.handle"
+					v-for="(menu, index) in menus"
+					:key="index"
+					:class="{ 'editor-menu-item': true, 'is-disabled': menu.disabled }">
+					<span :class="['iconfont', menu.icon]"></span>
+					<span>{{ menu.label }}</span>
+				</div>
+			</div>
 			<div class="editor-content">
 				<div class="editor-canvas-wrap">
 					<div
