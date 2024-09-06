@@ -31,7 +31,7 @@ export function useDragger(modelValue, containerRef) {
 
 		modelValue.value = data
 
-		emitter.emit(events.DROP)
+		emitter.emit(events.DRAG_END)
 	}
 
 	const handleDragEnd = e => {
@@ -40,7 +40,6 @@ export function useDragger(modelValue, containerRef) {
 		containerRef.value.removeEventListener('dragover', handleDragOver)
 		containerRef.value.removeEventListener('dragleave', handleDragLeave)
 		containerRef.value.removeEventListener('drop', handleDrop)
-		emitter.emit(events.DRAG_END)
 	}
 
 	const handleDragStart = (e, comp) => {

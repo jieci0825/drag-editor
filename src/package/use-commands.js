@@ -79,13 +79,13 @@ export function useCommands(modelValue) {
 				this._beforeBlocks = deepcopy(modelValue.value.blocks)
 			}
 
-			const drop = () => {
+			const dragEnd = () => {
 				// 拖拽完成之后触发对应的指令，将相关的数据进行存储
 				commandState.commandMap.drag()
 			}
 
 			emitter.on(events.DRAG_START, dragStart)
-			emitter.on(events.DROP, drop)
+			emitter.on(events.DRAG_END, dragEnd)
 
 			return () => {
 				emitter.off(events.DRAG_START, dragStart)

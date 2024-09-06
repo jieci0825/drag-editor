@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { emitter, events } from './events'
 
 /**
  * 生成辅助线
@@ -149,7 +150,6 @@ function findLine(lines, curBlockX, curBlockY, curBlockWidth, curBlockHeight, ga
 export function useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMarkLine, canvasSize }) {
 	// 获取焦点后实现拖拽
 	const dragState = ref({
-		isDrag: false,
 		startX: 0, // 鼠标按下的x坐标
 		startY: 0, // 鼠标按下的y坐标
 		curBlockX: 0, // 当前选中的block的x坐标
@@ -157,11 +157,12 @@ export function useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMa
 		curBlockWidth: 0, // 当前选中的block的宽度
 		curBlockHeight: 0, // 当前选中的block的高度
 		blockStartPos: [], // 选中的block的初始坐标
-		lines: {} // 辅助线
+		lines: {}, // 辅助线
+		draging: false // 是否正在拖拽
 	})
 
 	function handleMouseDown(e) {
-		dragState.value.isDrag = true
+		dragState.value.draging = false
 		dragState.value.startX = e.clientX
 		dragState.value.startY = e.clientY
 		dragState.value.curBlockX = lastSelectBlock.value.x
@@ -191,6 +192,10 @@ export function useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMa
 
 	function handleMouseMove(e) {
 		const _dragState = dragState.value
+		if (!_dragState.draging) {
+			emitter.emit(events.DRAG_START) // 触发事件，记住拖拽之前的位置
+			_dragState.draging = true
+		}
 
 		// 获取鼠标移动的坐标
 		let moveX = e.clientX
@@ -248,6 +253,10 @@ export function useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMa
 		document.removeEventListener('mousemove', handleMouseMove)
 		document.removeEventListener('mouseup', handleMouseUp)
 		clearMarkLine()
+		if (dragState.value.draging) {
+			emitter.emit(events.DRAG_END) // 触发事件，记住拖拽之后的位置
+			dragState.value.draging = false
+		}
 	}
 
 	return {
