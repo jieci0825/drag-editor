@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { emitter, events } from './events'
+import { emitter, events } from '../helpers/events'
 
 /**
  * 生成辅助线

@@ -1,6 +1,6 @@
 import { render, h, isVNode } from 'vue'
-import { isFunction } from './check-type'
-import Dialog from '../components/Dialog/index.vue'
+import { isFunction } from '@/utils/check-type'
+import Dialog from '@/components/dialog/index.vue'
 
 export function $dialog(options) {
 	const config = Object.assign(

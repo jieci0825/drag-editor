@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { emitter, events } from './events'
+import { emitter, events } from '../helpers/events'
 
 export function useDragger(modelValue, containerRef) {
 	const curEvt = ref(null)

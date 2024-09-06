@@ -1,9 +1,9 @@
 import { onUnmounted, reactive, h } from 'vue'
-import { emitter, events } from './events'
+import { emitter, events } from '../helpers/events'
 import deepcopy from 'deepcopy'
-import { $dialog } from '../utils/dialog'
-import EditorExportConfig from './editor-export-config.vue'
-import EditorImportConfig from './editor-import-config.vue'
+import { $dialog } from '../helpers/dialog'
+import EditorExportConfig from '../components/editor-export-config.vue'
+import EditorImportConfig from '../components/editor-import-config.vue'
 
 export function useCommands(modelValue) {
 	const commandState = reactive({

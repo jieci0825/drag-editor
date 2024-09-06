@@ -1,13 +1,13 @@
 <script setup>
 import EditorBlock from './editor-block.vue'
 import { ref, inject, computed } from 'vue'
-import { useDragger } from './use-dragger'
-import { useBlockFocus } from './use-block-focus'
-import { useCanvasDrag } from './use-canvas-drag'
-import { useMarkLine } from './use-mark-line'
-import { useMenu } from './use-menu'
-import { useCommands } from './use-commands'
-import { emitter, events } from './events'
+import { useDragger } from '../hooks/use-dragger'
+import { useBlockFocus } from '../hooks/use-block-focus'
+import { useCanvasDrag } from '../hooks/use-canvas-drag'
+import { useMarkLine } from '../hooks/use-mark-line'
+import { useMenu } from '../hooks/use-menu'
+import { useCommands } from '../hooks/use-commands'
+import { emitter, events } from '../helpers/events'
 import { ElMessage } from 'element-plus'
 
 const modelValue = defineModel({ type: Object, default: () => ({}) })
@@ -116,5 +116,5 @@ const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkL
 </template>
 
 <style lang="less">
-@import url('./editor.less');
+@import url('../styles/editor.less');
 </style>

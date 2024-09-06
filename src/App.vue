@@ -1,5 +1,4 @@
 <script setup>
-import Editor from './package/editor.vue'
 import data from './data'
 import { provide, ref } from 'vue'
 import { editorConfig } from './utils/editor-config'
