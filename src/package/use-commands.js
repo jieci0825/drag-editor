@@ -89,7 +89,7 @@ export function useCommands(modelValue) {
 
 			return () => {
 				emitter.off(events.DRAG_START, dragStart)
-				emitter.off(events.DROP, drop)
+				emitter.off(events.DRAG_END, dragEnd)
 			}
 		},
 		execute() {
@@ -113,7 +113,42 @@ export function useCommands(modelValue) {
 			}
 		}
 	})
+
+	const keyboardEvent = (() => {
+		const keyMap = {
+			90: 'z',
+			89: 'y'
+		}
+
+		const onKeydown = e => {
+			const { ctrlKey, keyCode } = e
+			const keyCodes = []
+			if (ctrlKey) keyCodes.push('ctrl')
+			keyMap[keyCode] && keyCodes.push(keyMap[keyCode])
+			const keyString = keyCodes.join('+')
+
+			commandState.commandArray.forEach(command => {
+				if (!command.keyboard) return
+				if (command.keyboard === keyString) {
+					const fn = commandState.commandMap[command.name]
+					fn && fn()
+					e.preventDefault()
+				}
+			})
+		}
+
+		const init = () => {
+			window.addEventListener('keydown', onKeydown)
+			return () => {
+				// 注销快捷键监听事件
+				window.removeEventListener('keydown', onKeydown)
+			}
+		}
+		return init
+	})()
+
 	;(() => {
+		commandState.destrotyArray.push(keyboardEvent())
 		commandState.commandArray.forEach(command => {
 			command.init && commandState.destrotyArray.push(command.init())
 		})
