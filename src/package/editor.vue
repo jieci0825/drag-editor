@@ -7,12 +7,23 @@ import { useCanvasDrag } from './use-canvas-drag'
 import { useMarkLine } from './use-mark-line'
 import { useMenu } from './use-menu'
 import { useCommands } from './use-commands'
+import { emitter, events } from './events'
+import { ElMessage } from 'element-plus'
 
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
 	return {
 		width: modelValue.value.container.width + 'px',
 		height: modelValue.value.container.height + 'px'
+	}
+})
+
+emitter.on(events.IMPORT_JSON, content => {
+	try {
+		const data = JSON.parse(content)
+		modelValue.value = data
+	} catch (error) {
+		ElMessage.error('导入失败，请检查JSON格式是否正确')
 	}
 })
 

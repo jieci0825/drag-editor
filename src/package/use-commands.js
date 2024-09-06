@@ -3,6 +3,7 @@ import { emitter, events } from './events'
 import deepcopy from 'deepcopy'
 import { $dialog } from '../utils/dialog'
 import EditorExportConfig from './editor-export-config.vue'
+import EditorImportConfig from './editor-import-config.vue'
 
 export function useCommands(modelValue) {
 	const commandState = reactive({
@@ -121,7 +122,17 @@ export function useCommands(modelValue) {
 		execute() {
 			return {
 				redo() {
-					console.log('导入')
+					const { onDestroy } = $dialog({
+						title: '导入JSON配置',
+						content: h(EditorImportConfig, {
+							onClose() {
+								onDestroy()
+							},
+							onImportJSON(content) {
+								emitter.emit(events.IMPORT_JSON, content)
+							}
+						})
+					})
 				}
 			}
 		}
@@ -132,7 +143,15 @@ export function useCommands(modelValue) {
 		execute() {
 			return {
 				redo() {
-					$dialog({ title: '导出JSON配置', content: h(EditorExportConfig) })
+					const { onDestroy } = $dialog({
+						title: '导出JSON配置',
+						content: h(EditorExportConfig, {
+							content: JSON.stringify(modelValue.value, null, 2),
+							onClose() {
+								onDestroy()
+							}
+						})
+					})
 				}
 			}
 		}
