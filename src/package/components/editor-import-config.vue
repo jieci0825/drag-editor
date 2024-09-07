@@ -1,5 +1,5 @@
 <script setup>
-import { ElButton, ElInput } from 'element-plus'
+import { ElButton, ElInput, ElMessage } from 'element-plus'
 import { ref } from 'vue'
 
 const emits = defineEmits(['close', 'importJSON'])
@@ -7,6 +7,7 @@ const emits = defineEmits(['close', 'importJSON'])
 const content = ref('')
 
 const handleImportJSON = () => {
+	if (!content.value) return ElMessage.warning('请输入有效的JSON配置')
 	emits('importJSON', content.value)
 	emits('close')
 }

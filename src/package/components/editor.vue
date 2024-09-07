@@ -18,15 +18,6 @@ const containerStyle = computed(() => {
 	}
 })
 
-emitter.on(events.IMPORT_JSON, content => {
-	try {
-		const data = JSON.parse(content)
-		modelValue.value = data
-	} catch (error) {
-		ElMessage.error('导入失败，请检查JSON格式是否正确')
-	}
-})
-
 const containerRef = ref(null)
 const editorConfigInject = inject('editorConfig')
 const canvasSize = ref({
@@ -35,7 +26,7 @@ const canvasSize = ref({
 })
 
 const { commandState } = useCommands(modelValue)
-const { menus } = useMenu(commandState)
+const { menus } = useMenu(commandState, modelValue)
 
 const { markLine, setMarkLine, clearMarkLine } = useMarkLine()
 

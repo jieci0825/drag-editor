@@ -1,6 +1,9 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, h } from 'vue'
+import { $dialog } from '../helpers/dialog'
+import EditorExportConfig from '../components/editor-export-config.vue'
+import EditorImportConfig from '../components/editor-import-config.vue'
 
-export function useMenu(commandState) {
+export function useMenu(commandState, modelValue) {
 	const menus = reactive([
 		{
 			label: '撤销',
@@ -21,12 +24,39 @@ export function useMenu(commandState) {
 		{
 			label: '导入',
 			icon: 'icon-import',
-			handle: commandState.commandMap.importConfig
+			handle: () => {
+				const { onDestroy } = $dialog({
+					title: '导入JSON配置',
+					content: h(EditorImportConfig, {
+						onClose() {
+							onDestroy()
+						},
+						onImportJSON(content) {
+							try {
+								const data = JSON.parse(content)
+								commandState.commandMap.updateContainer(data)
+							} catch (error) {
+								ElMessage.error('导入失败，请检查JSON格式是否正确')
+							}
+						}
+					})
+				})
+			}
 		},
 		{
 			label: '导出',
 			icon: 'icon-export',
-			handle: commandState.commandMap.exportConfig
+			handle: () => {
+				const { onDestroy } = $dialog({
+					title: '导出JSON配置',
+					content: h(EditorExportConfig, {
+						content: JSON.stringify(modelValue.value, null, 2),
+						onClose() {
+							onDestroy()
+						}
+					})
+				})
+			}
 		}
 	])
 

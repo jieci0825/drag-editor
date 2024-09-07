@@ -1,9 +1,6 @@
-import { onUnmounted, reactive, h } from 'vue'
+import { onUnmounted, reactive } from 'vue'
 import { emitter, events } from '../helpers/events'
 import deepcopy from 'deepcopy'
-import { $dialog } from '../helpers/dialog'
-import EditorExportConfig from '../components/editor-export-config.vue'
-import EditorImportConfig from '../components/editor-import-config.vue'
 
 export function useCommands(modelValue) {
 	const commandState = reactive({
@@ -15,11 +12,11 @@ export function useCommands(modelValue) {
 	})
 
 	const register = command => {
-		commandState.commandMap[command.name] = () => {
-			const { redo, undo } = command.execute()
-
+		commandState.commandMap[command.name] = (...args) => {
+			const { redo, undo } = command.execute(...args)
+			redo()
 			// 不需要添加到队列的命令，直接执行即可，如果需要添加到队列的，则不需要执行
-			if (!command.pushQueue) return redo()
+			if (!command.pushQueue) return
 
 			if (commandState.queue.length > 0) {
 				// 如果队列长度大于0，则截取当前索引后面的所有元素，避免中途进行撤销或者多次拖拽导致队列混乱
@@ -105,53 +102,30 @@ export function useCommands(modelValue) {
 				// 前进
 				redo() {
 					// 更新画布中的数据
-					modelValue.value = { ...modelValue.value, blocks: afterBlocks }
+					modelValue.value.blocks = afterBlocks
 				},
 				// 后退
 				undo() {
-					// ! 存疑
 					// 撤销操作，将画布中的数据还原到拖拽前的数据
-					modelValue.value = { ...modelValue.value, blocks: beforeBlocks }
+					modelValue.value.blocks = beforeBlocks
 				}
 			}
 		}
 	})
 	register({
-		name: 'importConfig',
-		keyboard: '',
-		execute() {
-			return {
-				redo() {
-					const { onDestroy } = $dialog({
-						title: '导入JSON配置',
-						content: h(EditorImportConfig, {
-							onClose() {
-								onDestroy()
-							},
-							onImportJSON(content) {
-								emitter.emit(events.IMPORT_JSON, content)
-							}
-						})
-					})
-				}
+		name: 'updateContainer',
+		pushQueue: true,
+		execute(newValue) {
+			const state = {
+				before: deepcopy(modelValue.value),
+				after: deepcopy(newValue)
 			}
-		}
-	})
-	register({
-		name: 'exportConfig',
-		keyboard: '',
-		execute() {
 			return {
 				redo() {
-					const { onDestroy } = $dialog({
-						title: '导出JSON配置',
-						content: h(EditorExportConfig, {
-							content: JSON.stringify(modelValue.value, null, 2),
-							onClose() {
-								onDestroy()
-							}
-						})
-					})
+					modelValue.value = state.after
+				},
+				undo() {
+					modelValue.value = state.before
 				}
 			}
 		}
