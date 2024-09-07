@@ -54,7 +54,7 @@ const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkL
 const { commandState } = useCommands({ modelValue, focusData })
 const { menus } = useMenu({ commandState, modelValue, focusData, isPreview, clearBlockFocus, isEdit })
 
-const { handleBlockContextMenu } = useContextMenu()
+const { handleBlockContextMenu } = useContextMenu({ commandState, lastSelectBlock })
 </script>
 
 <template>

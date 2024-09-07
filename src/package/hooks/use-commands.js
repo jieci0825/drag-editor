@@ -30,6 +30,7 @@ export function useCommands({ modelValue, focusData }) {
 		commandState.commandArray.push(command)
 	}
 
+	// 后退
 	register({
 		name: 'undo', // 命令名称
 		keyboard: 'ctrl+z', // 快捷键
@@ -49,6 +50,7 @@ export function useCommands({ modelValue, focusData }) {
 			}
 		}
 	})
+	// 前进
 	register({
 		name: 'redo', // 命令名称
 		keyboard: 'ctrl+y', // 快捷键
@@ -67,6 +69,7 @@ export function useCommands({ modelValue, focusData }) {
 			}
 		}
 	})
+	// 记录拖拽的操作记录
 	register({
 		name: 'drag',
 		keyboard: '',
@@ -112,6 +115,7 @@ export function useCommands({ modelValue, focusData }) {
 			}
 		}
 	})
+	// 更新整个容器
 	register({
 		name: 'updateContainer',
 		pushQueue: true,
@@ -130,6 +134,31 @@ export function useCommands({ modelValue, focusData }) {
 			}
 		}
 	})
+	// 更新单个 block
+	register({
+		name: 'updateBlock',
+		pushQueue: true,
+		execute(newBlock, oldBlock) {
+			const before = deepcopy(modelValue.value.blocks)
+			const after = (() => {
+				const blocks = deepcopy(modelValue.value.blocks)
+				const oldBlockIndex = modelValue.value.blocks.indexOf(oldBlock)
+				if (oldBlockIndex > -1) {
+					blocks.splice(oldBlockIndex, 1, newBlock)
+				}
+				return blocks
+			})()
+			return {
+				redo() {
+					modelValue.value.blocks = after
+				},
+				undo() {
+					modelValue.value.blocks = before
+				}
+			}
+		}
+	})
+	// 置顶
 	register({
 		name: 'placeTop',
 		pushQueue: true,
@@ -156,6 +185,7 @@ export function useCommands({ modelValue, focusData }) {
 			}
 		}
 	})
+	// 置底
 	register({
 		name: 'placeBottom',
 		pushQueue: true,
@@ -189,6 +219,7 @@ export function useCommands({ modelValue, focusData }) {
 			}
 		}
 	})
+	// 删除
 	register({
 		name: 'deleteBlock',
 		pushQueue: true,

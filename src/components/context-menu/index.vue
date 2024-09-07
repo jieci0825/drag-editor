@@ -42,6 +42,11 @@ const onMouseDown = e => {
 	}
 }
 
+const itemClick = item => {
+	item.handle(item)
+	props.onDestroy()
+}
+
 onMounted(() => {
 	document.addEventListener('mousedown', onMouseDown, true)
 })
@@ -59,6 +64,7 @@ onUnmounted(() => {
 		<div class="menu-list">
 			<div
 				class="menu-item"
+				@click="itemClick(item)"
 				v-for="item in props.menus"
 				:key="item.value">
 				{{ item.label }}
@@ -79,6 +85,7 @@ onUnmounted(() => {
 			padding: 5px 10px;
 			cursor: pointer;
 			font-size: 14px;
+			user-select: none;
 			border-bottom: 1px solid var(--el-border-color);
 			&:last-child {
 				border-bottom-color: transparent;
