@@ -22,8 +22,8 @@ export function useBlockFocus(modelValue, { callback, isPreview }) {
 	const handleBlockMouseDown = (e, blockRef, block, index) => {
 		if (isPreview.value) return
 
-		e.preventDefault()
-		e.stopPropagation()
+		// e.preventDefault()
+		e.stopPropagation() // 阻止冒泡到画布导致取消选中
 
 		if (!block.focus) {
 			if (!e.shiftKey) {
@@ -44,9 +44,6 @@ export function useBlockFocus(modelValue, { callback, isPreview }) {
 	// 画布点击
 	const handleCanvasMouseDown = e => {
 		if (isPreview.value) return
-
-		e.preventDefault()
-		e.stopPropagation()
 		curSelectIndex.value = -1
 		clearBlockFocus()
 	}

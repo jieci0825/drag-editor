@@ -8,6 +8,7 @@ import { useCanvasDrag } from '../hooks/use-canvas-drag'
 import { useMarkLine } from '../hooks/use-mark-line'
 import { useMenu } from '../hooks/use-menu'
 import { useCommands } from '../hooks/use-commands'
+import { useContextMenu } from '../hooks/use-context-menu'
 import { emitter, events } from '../helpers/events'
 import { ElMessage, ElButton } from 'element-plus'
 import { isFunction } from '@/utils/check-type'
@@ -52,6 +53,8 @@ const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkL
 
 const { commandState } = useCommands({ modelValue, focusData })
 const { menus } = useMenu({ commandState, modelValue, focusData, isPreview, clearBlockFocus, isEdit })
+
+const { handleBlockContextMenu } = useContextMenu()
 </script>
 
 <template>
@@ -89,11 +92,13 @@ const { menus } = useMenu({ commandState, modelValue, focusData, isPreview, clea
 				<div class="editor-content">
 					<div class="editor-canvas-wrap">
 						<div
+							@contextmenu.prevent
 							@mousedown="handleCanvasMouseDown"
 							:style="containerStyle"
 							ref="containerRef"
 							class="editor-canvas">
 							<EditorBlock
+								@blockContextMenu="($event, blockRef) => handleBlockContextMenu($event, blockRef, block, index)"
 								@block-mouse-down="($event, blockRef) => handleBlockMouseDown($event, blockRef, block, index)"
 								v-for="(block, index) in modelValue.blocks"
 								:key="block"

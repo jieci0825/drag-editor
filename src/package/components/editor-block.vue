@@ -15,7 +15,7 @@ const props = defineProps({
 	}
 })
 
-const emits = defineEmits(['blockMouseDown', 'blockMouseUp'])
+const emits = defineEmits(['blockMouseDown', 'blockMouseUp', 'blockContextMenu'])
 
 const blockStyle = computed(() => {
 	return {
@@ -80,6 +80,7 @@ onMounted(() => {
 
 <template>
 	<div
+		@contextmenu.prevent="emits('blockContextMenu', $event, blockRef)"
 		@mousedown="emits('blockMouseDown', $event, blockRef)"
 		ref="blockRef"
 		:style="blockStyle"
