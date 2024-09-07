@@ -8,6 +8,10 @@ const props = defineProps({
 	canvasSize: {
 		type: Object,
 		default: () => ({})
+	},
+	preview: {
+		type: Boolean,
+		default: false
 	}
 })
 
@@ -79,7 +83,7 @@ onMounted(() => {
 		@mousedown="emits('blockMouseDown', $event, blockRef)"
 		ref="blockRef"
 		:style="blockStyle"
-		:class="{ 'editor-block-focus': props.block.focus }"
+		:class="{ 'editor-block-focus': props.block.focus, 'is-preview': props.preview }"
 		class="editor-block">
 		<component :is="comp.render()" />
 	</div>

@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 
-export function useBlockFocus(modelValue, { callback }) {
+export function useBlockFocus(modelValue, { callback, preview }) {
 	// 当前选中的block的index -1表示没有选中
 	const curSelectIndex = ref(-1)
 
@@ -20,6 +20,8 @@ export function useBlockFocus(modelValue, { callback }) {
 	})
 
 	const handleBlockMouseDown = (e, blockRef, block, index) => {
+		if (preview.value) return
+
 		e.preventDefault()
 		e.stopPropagation()
 
@@ -41,6 +43,8 @@ export function useBlockFocus(modelValue, { callback }) {
 
 	// 画布点击
 	const handleCanvasMouseDown = e => {
+		if (preview.value) return
+
 		e.preventDefault()
 		e.stopPropagation()
 		curSelectIndex.value = -1
@@ -51,6 +55,7 @@ export function useBlockFocus(modelValue, { callback }) {
 		handleBlockMouseDown,
 		handleCanvasMouseDown,
 		focusData,
-		lastSelectBlock
+		lastSelectBlock,
+		clearBlockFocus
 	}
 }

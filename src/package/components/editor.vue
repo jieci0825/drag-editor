@@ -9,7 +9,9 @@ import { useMenu } from '../hooks/use-menu'
 import { useCommands } from '../hooks/use-commands'
 import { emitter, events } from '../helpers/events'
 import { ElMessage } from 'element-plus'
+import { isFunction } from '@/utils/check-type'
 
+const preview = ref(false)
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
 	return {
@@ -31,18 +33,22 @@ const { markLine, setMarkLine, clearMarkLine } = useMarkLine()
 const { handleDragStart, handleDragEnd } = useDragger(modelValue, containerRef)
 
 // 焦点
-const { handleBlockMouseDown, focusData, handleCanvasMouseDown, lastSelectBlock } = useBlockFocus(modelValue, {
-	callback: e => {
-		// 画布内拖拽
-		handleMouseDown(e)
+const { handleBlockMouseDown, focusData, handleCanvasMouseDown, lastSelectBlock, clearBlockFocus } = useBlockFocus(
+	modelValue,
+	{
+		callback: e => {
+			// 画布内拖拽
+			handleMouseDown(e)
+		},
+		preview
 	}
-})
+)
 
 // 画布内拖拽
 const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMarkLine, canvasSize })
 
 const { commandState } = useCommands({ modelValue, focusData })
-const { menus } = useMenu({ commandState, modelValue, focusData })
+const { menus } = useMenu({ commandState, modelValue, focusData, preview, clearBlockFocus })
 </script>
 
 <template>
@@ -72,8 +78,8 @@ const { menus } = useMenu({ commandState, modelValue, focusData })
 					:key="index"
 					:title="menu.title"
 					:class="{ 'editor-menu-item': true, 'is-disabled': menu.disabled }">
-					<span :class="['iconfont', menu.icon]"></span>
-					<span>{{ menu.label }}</span>
+					<span :class="['iconfont', isFunction(menu.icon) ? menu.icon() : menu.icon]"></span>
+					<span>{{ isFunction(menu.label) ? menu.label() : menu.label }}</span>
 				</div>
 			</div>
 			<div class="editor-content">
@@ -87,6 +93,7 @@ const { menus } = useMenu({ commandState, modelValue, focusData })
 							@block-mouse-down="($event, blockRef) => handleBlockMouseDown($event, blockRef, block, index)"
 							v-for="(block, index) in modelValue.blocks"
 							:key="block"
+							:preview="preview"
 							:canvas-size="canvasSize"
 							:block="block" />
 						<!-- 辅助线 -->

@@ -123,6 +123,7 @@
 				border: 1px solid var(--el-border-color);
 				position: relative;
 				.editor-canvas {
+					overflow: hidden;
 					margin: 0 auto;
 					background-color: var(--el-bg-color);
 					position: relative;
@@ -151,6 +152,11 @@
 							cursor: move;
 							&::after {
 								border: 1.5px dashed var(--el-color-danger);
+							}
+						}
+						&.is-preview {
+							&::after {
+								display: none;
 							}
 						}
 					}
