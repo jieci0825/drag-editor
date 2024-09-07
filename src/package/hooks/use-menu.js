@@ -3,8 +3,16 @@ import { $dialog } from '../helpers/dialog'
 import EditorExportConfig from '../components/editor-export-config.vue'
 import EditorImportConfig from '../components/editor-import-config.vue'
 
-export function useMenu({ commandState, modelValue, focusData, isPreview, clearBlockFocus }) {
+export function useMenu({ commandState, modelValue, focusData, isPreview, clearBlockFocus, isEdit }) {
 	const menus = reactive([
+		{
+			label: () => (isPreview.value ? '编辑' : '预览'),
+			icon: () => (isPreview.value ? 'icon-edit-full' : 'icon-preview-full'),
+			handle: () => {
+				isPreview.value = !isPreview.value
+				clearBlockFocus()
+			}
+		},
 		{
 			label: '撤销',
 			icon: 'icon-undo',
@@ -83,10 +91,10 @@ export function useMenu({ commandState, modelValue, focusData, isPreview, clearB
 			handle: commandState.commandMap.deleteBlock
 		},
 		{
-			label: () => (isPreview.value ? '编辑' : '预览'),
-			icon: () => (isPreview.value ? 'icon-edit-full' : 'icon-preview-full'),
+			label: '关闭',
+			icon: 'icon-close-full',
 			handle: () => {
-				isPreview.value = !isPreview.value
+				isEdit.value = true
 				clearBlockFocus()
 			}
 		}

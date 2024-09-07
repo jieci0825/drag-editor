@@ -69,6 +69,20 @@
 		display: flex;
 		flex-direction: column;
 		z-index: 1;
+		&.is-preview {
+			background-color: var(--el-bg-color-page);
+			.actions {
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+				margin-top: 20px;
+			}
+			.editor-content {
+				.editor-canvas-wrap {
+					border: none;
+				}
+			}
+		}
 		.editor-menu {
 			width: 100%;
 			height: 80px;
