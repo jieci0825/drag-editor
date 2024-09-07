@@ -3,7 +3,7 @@ import { $dialog } from '../helpers/dialog'
 import EditorExportConfig from '../components/editor-export-config.vue'
 import EditorImportConfig from '../components/editor-import-config.vue'
 
-export function useMenu({ commandState, modelValue, focusData, preview, clearBlockFocus }) {
+export function useMenu({ commandState, modelValue, focusData, isPreview, clearBlockFocus }) {
 	const menus = reactive([
 		{
 			label: '撤销',
@@ -83,10 +83,10 @@ export function useMenu({ commandState, modelValue, focusData, preview, clearBlo
 			handle: commandState.commandMap.deleteBlock
 		},
 		{
-			label: () => (preview.value ? '编辑' : '预览'),
-			icon: () => (preview.value ? 'icon-edit-full' : 'icon-preview-full'),
+			label: () => (isPreview.value ? '编辑' : '预览'),
+			icon: () => (isPreview.value ? 'icon-edit-full' : 'icon-preview-full'),
 			handle: () => {
-				preview.value = !preview.value
+				isPreview.value = !isPreview.value
 				clearBlockFocus()
 			}
 		}

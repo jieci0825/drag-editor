@@ -9,7 +9,7 @@ const props = defineProps({
 		type: Object,
 		default: () => ({})
 	},
-	preview: {
+	isPreview: {
 		type: Boolean,
 		default: false
 	}
@@ -83,7 +83,7 @@ onMounted(() => {
 		@mousedown="emits('blockMouseDown', $event, blockRef)"
 		ref="blockRef"
 		:style="blockStyle"
-		:class="{ 'editor-block-focus': props.block.focus, 'is-preview': props.preview }"
+		:class="{ 'editor-block-focus': props.block.focus, 'is-preview': props.isPreview }"
 		class="editor-block">
 		<component :is="comp.render()" />
 	</div>

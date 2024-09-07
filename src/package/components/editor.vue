@@ -11,7 +11,7 @@ import { emitter, events } from '../helpers/events'
 import { ElMessage } from 'element-plus'
 import { isFunction } from '@/utils/check-type'
 
-const preview = ref(false)
+const isPreview = ref(false)
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
 	return {
@@ -40,7 +40,7 @@ const { handleBlockMouseDown, focusData, handleCanvasMouseDown, lastSelectBlock,
 			// 画布内拖拽
 			handleMouseDown(e)
 		},
-		preview
+		isPreview
 	}
 )
 
@@ -48,7 +48,7 @@ const { handleBlockMouseDown, focusData, handleCanvasMouseDown, lastSelectBlock,
 const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMarkLine, canvasSize })
 
 const { commandState } = useCommands({ modelValue, focusData })
-const { menus } = useMenu({ commandState, modelValue, focusData, preview, clearBlockFocus })
+const { menus } = useMenu({ commandState, modelValue, focusData, isPreview, clearBlockFocus })
 </script>
 
 <template>
@@ -93,7 +93,7 @@ const { menus } = useMenu({ commandState, modelValue, focusData, preview, clearB
 							@block-mouse-down="($event, blockRef) => handleBlockMouseDown($event, blockRef, block, index)"
 							v-for="(block, index) in modelValue.blocks"
 							:key="block"
-							:preview="preview"
+							:isPreview="isPreview"
 							:canvas-size="canvasSize"
 							:block="block" />
 						<!-- 辅助线 -->
