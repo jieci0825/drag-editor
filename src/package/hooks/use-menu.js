@@ -73,6 +73,14 @@ export function useMenu({ commandState, modelValue, focusData }) {
 				return focusData.value.focus.length === 0
 			}),
 			handle: commandState.commandMap.placeBottom
+		},
+		{
+			label: '删除',
+			icon: 'icon-delete',
+			disabled: computed(() => {
+				return focusData.value.focus.length === 0
+			}),
+			handle: commandState.commandMap.deleteBlock
 		}
 	])
 

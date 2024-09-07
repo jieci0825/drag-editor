@@ -163,14 +163,38 @@ export function useCommands({ modelValue, focusData }) {
 			const before = deepcopy(modelValue.value.blocks)
 			const after = (() => {
 				const { focus, unfocus } = focusData.value
-				const minZindex = unfocus.reduce((prev, block) => {
+				let minZindex = unfocus.reduce((prev, block) => {
 					return Math.min(prev, block.zIndex)
 				}, +Infinity)
-				focus.forEach(block => {
-					block.zIndex = minZindex - 1
-				})
+
+				// ec处理：zIndex 的值为负数则会导致元素被画布覆盖，无法选中，所以若 minZindex 为负数，则将其改为 0，其他的 block +1
+				if (minZindex < 0) {
+					unfocus.forEach(block => (block.zIndex = block.zIndex + 1))
+					minZindex = 0
+				} else {
+					minZindex--
+				}
+
+				focus.forEach(block => (block.zIndex = minZindex))
+
 				return deepcopy(modelValue.value.blocks)
 			})()
+			return {
+				redo() {
+					modelValue.value.blocks = after
+				},
+				undo() {
+					modelValue.value.blocks = before
+				}
+			}
+		}
+	})
+	register({
+		name: 'deleteBlock',
+		pushQueue: true,
+		execute() {
+			const before = deepcopy(modelValue.value.blocks)
+			const after = deepcopy(focusData.value.unfocus)
 			return {
 				redo() {
 					modelValue.value.blocks = after
