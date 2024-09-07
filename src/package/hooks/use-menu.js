@@ -3,7 +3,7 @@ import { $dialog } from '../helpers/dialog'
 import EditorExportConfig from '../components/editor-export-config.vue'
 import EditorImportConfig from '../components/editor-import-config.vue'
 
-export function useMenu(commandState, modelValue) {
+export function useMenu({ commandState, modelValue, focusData }) {
 	const menus = reactive([
 		{
 			label: '撤销',
@@ -57,6 +57,22 @@ export function useMenu(commandState, modelValue) {
 					})
 				})
 			}
+		},
+		{
+			label: '置顶',
+			icon: 'icon-top',
+			disabled: computed(() => {
+				return focusData.value.focus.length === 0
+			}),
+			handle: commandState.commandMap.placeTop
+		},
+		{
+			label: '置底',
+			icon: 'icon-bottom',
+			disabled: computed(() => {
+				return focusData.value.focus.length === 0
+			}),
+			handle: commandState.commandMap.placeBottom
 		}
 	])
 

@@ -2,7 +2,7 @@ import { onUnmounted, reactive } from 'vue'
 import { emitter, events } from '../helpers/events'
 import deepcopy from 'deepcopy'
 
-export function useCommands(modelValue) {
+export function useCommands({ modelValue, focusData }) {
 	const commandState = reactive({
 		curIndex: -1, // 前进后退的索引
 		queue: [], // 所有命令的操作队列
@@ -126,6 +126,57 @@ export function useCommands(modelValue) {
 				},
 				undo() {
 					modelValue.value = state.before
+				}
+			}
+		}
+	})
+	register({
+		name: 'placeTop',
+		pushQueue: true,
+		execute() {
+			const before = deepcopy(modelValue.value.blocks)
+			const after = (() => {
+				const { focus, unfocus } = focusData.value
+				// 寻找最大的zIndex
+				const maxZindex = unfocus.reduce((prev, block) => {
+					return Math.max(prev, block.zIndex)
+				}, -Infinity)
+				focus.forEach(block => {
+					block.zIndex = maxZindex + 1
+				})
+				return deepcopy(modelValue.value.blocks)
+			})()
+			return {
+				redo() {
+					modelValue.value.blocks = after
+				},
+				undo() {
+					modelValue.value.blocks = before
+				}
+			}
+		}
+	})
+	register({
+		name: 'placeBottom',
+		pushQueue: true,
+		execute() {
+			const before = deepcopy(modelValue.value.blocks)
+			const after = (() => {
+				const { focus, unfocus } = focusData.value
+				const minZindex = unfocus.reduce((prev, block) => {
+					return Math.min(prev, block.zIndex)
+				}, +Infinity)
+				focus.forEach(block => {
+					block.zIndex = minZindex - 1
+				})
+				return deepcopy(modelValue.value.blocks)
+			})()
+			return {
+				redo() {
+					modelValue.value.blocks = after
+				},
+				undo() {
+					modelValue.value.blocks = before
 				}
 			}
 		}

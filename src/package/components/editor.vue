@@ -25,9 +25,6 @@ const canvasSize = ref({
 	height: modelValue.value.container.height
 })
 
-const { commandState } = useCommands(modelValue)
-const { menus } = useMenu(commandState, modelValue)
-
 const { markLine, setMarkLine, clearMarkLine } = useMarkLine()
 
 // 物料区拖拽到画布
@@ -43,6 +40,9 @@ const { handleBlockMouseDown, focusData, handleCanvasMouseDown, lastSelectBlock 
 
 // 画布内拖拽
 const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkLine, clearMarkLine, canvasSize })
+
+const { commandState } = useCommands({ modelValue, focusData })
+const { menus } = useMenu({ commandState, modelValue, focusData })
 </script>
 
 <template>
@@ -67,7 +67,7 @@ const { handleMouseDown } = useCanvasDrag(focusData, lastSelectBlock, { setMarkL
 		<div class="editor-main">
 			<div class="editor-menu">
 				<div
-					@click="menu.handle"
+					@click="() => !menu.disabled && menu.handle()"
 					v-for="(menu, index) in menus"
 					:key="index"
 					:title="menu.title"
