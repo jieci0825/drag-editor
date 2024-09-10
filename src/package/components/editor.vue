@@ -15,6 +15,8 @@ import { isFunction } from '@/utils/check-type'
 const isPreview = ref(false) // 是否开启预览
 const isEdit = ref(false) // 是否编辑
 
+const props = defineProps({})
+
 const modelValue = defineModel({ type: Object, default: () => ({}) })
 const containerStyle = computed(() => {
 	return {

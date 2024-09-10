@@ -1,4 +1,5 @@
 import { ElButton, ElInput } from 'element-plus'
+import { randomNum } from './tools'
 
 const createInputProp = (label, initValue, elProps) => ({
 	type: 'input',
@@ -48,7 +49,7 @@ editorConfig.register({
 	render: props => {
 		return (
 			<>
-				<span style={{ color: props.color, fontSize: props.size }}>{props.text || '渲染文本'}</span>
+				<span style={{ color: props.color, fontSize: `${props.size}px` }}>{props.text || '渲染文本'}</span>
 			</>
 		)
 	},
@@ -64,7 +65,7 @@ editorConfig.register({
 			'字体大小',
 			16,
 			[
-				{ label: '较大的', value: 18 },
+				{ label: '较大的', value: 20 },
 				{ label: '正常的', value: 16 },
 				{ label: '较小的', value: 14 }
 			],
@@ -126,7 +127,42 @@ editorConfig.register({
 editorConfig.register({
 	label: '输入框',
 	preview: () => <ElInput placeholder='输入框'></ElInput>,
-	render: () => <ElInput placeholder='输入内容...'></ElInput>,
+	render: props => {
+		return (
+			<>
+				<ElInput
+					v-model={props.value}
+					size={props.size}
+					placeholder={props.placeholder}></ElInput>
+			</>
+		)
+	},
 	type: 'input',
-	props: []
+	props: {
+		field: createInputProp('唯一绑定字段', () => `input${randomNum()}`, {
+			placeholder: '请输入你的字段名称'
+		}),
+		value: createInputProp('输入框内容', '', {
+			placeholder: '请输入输入框内容'
+		}),
+		placeholder: createInputProp('占位符', '输入内容...', {
+			placeholder: '请输入占位符内容'
+		}),
+		size: createSelectProp(
+			'输入框尺寸',
+			'default',
+			[
+				{ label: '大型', value: 'large' },
+				{ label: '默认', value: 'default' },
+				{ label: '小型', value: 'small' }
+			],
+			{
+				placeholder: '选择输入框尺寸'
+			}
+		)
+	},
+	model: {
+		// { default:'input0756'}
+		default: '唯一绑定字段'
+	}
 })

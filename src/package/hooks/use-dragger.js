@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { emitter, events } from '../helpers/events'
+import { isFunction } from 'element-plus/es/utils/types.mjs'
 
 export function useDragger(modelValue, containerRef, editorConfigInject) {
 	const curEvt = ref(null)
@@ -83,7 +84,7 @@ function initProps(type, editorConfigInject) {
 	const _props = {}
 	const p = editorConfigInject.componentMap[type].props
 	for (const key in p) {
-		_props[key] = p[key].initValue ?? ''
+		_props[key] = isFunction(p[key].initValue) ? p[key].initValue() : p[key].initValue ?? ''
 	}
 	return _props
 }
