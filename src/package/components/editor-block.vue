@@ -86,7 +86,7 @@ onMounted(() => {
 		:style="blockStyle"
 		:class="{ 'editor-block-focus': props.block.focus, 'is-preview': props.isPreview }"
 		class="editor-block">
-		<component :is="comp.render()" />
+		<component :is="comp.render(props.block.props)" />
 	</div>
 </template>
 

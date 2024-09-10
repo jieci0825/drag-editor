@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { emitter, events } from '../helpers/events'
 
-export function useDragger(modelValue, containerRef) {
+export function useDragger(modelValue, containerRef, editorConfigInject) {
 	const curEvt = ref(null)
 	const curComponent = ref(null)
 
@@ -24,7 +24,8 @@ export function useDragger(modelValue, containerRef) {
 			width: curComponent.value.width,
 			height: curComponent.value.height,
 			zIndex: 1,
-			alignCenter: true
+			alignCenter: true,
+			props: initProps(curComponent.value.type, editorConfigInject)
 		}
 		blocks.push(block)
 		const data = { ...modelValue.value, blocks }
@@ -76,4 +77,13 @@ export function useDragger(modelValue, containerRef) {
 		handleDragStart,
 		handleDragEnd
 	}
+}
+
+function initProps(type, editorConfigInject) {
+	const _props = {}
+	const p = editorConfigInject.componentMap[type].props
+	for (const key in p) {
+		_props[key] = p[key].initValue ?? ''
+	}
+	return _props
 }
